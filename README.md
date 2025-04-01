@@ -23,6 +23,7 @@ For now, I use [URLCheck](https://github.com/TrianguloY/URLCheck) on my Android 
 - [ ] Support `files`
 - [ ] Send `text/files`
 - [ ] Add security
+- [x] Add logger
 - [ ] Add Auth
   - [ ] Link with QR code
 - [o] Linux notification
