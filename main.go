@@ -20,7 +20,10 @@ import (
 	"time"
 )
 
-const appName = "goairdrop"
+const (
+	appName    = "goairdrop"
+	appVersion = "0.1.1"
+)
 
 const filePerm = 0o644 // Permissions for new files.
 
@@ -34,8 +37,6 @@ var (
 	versionFlag bool
 	loggerFlag  string
 )
-
-var appVersion = "0.1.1"
 
 // Message represents the structure of the incoming messages.
 type Message struct {

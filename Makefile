@@ -1,4 +1,4 @@
-# goairdrop - simple program to receive text 
+# goairdrop - simple program to receive text
 # See LICENSE file for copyright and license details.
 
 PROJECT_NAME	:= goairdrop
@@ -8,7 +8,7 @@ BIN_PATH	:= $(BIN_DIR)/$(PROJECT_NAME)
 LDFLAGS		:= -s -w
 
 # Target to build everything
-all: test build
+all: test lint build
 
 # Build the binary
 build:
@@ -26,6 +26,13 @@ test:
 clean:
 	@echo '>> Cleaning bin'
 	rm -rf $(BIN_DIR)
+
+# Lint code with 'golangci-lint'
+lint:
+	@echo '>> Linting code'
+	@echo
+	@go vet ./...
+	golangci-lint run ./...
 
 
 .PHONY: all test clean

@@ -26,6 +26,6 @@ For now, I use [URLCheck](https://github.com/TrianguloY/URLCheck) on my Android 
 - [x] Add logger
 - [ ] Add Auth
   - [ ] Link with QR code
-- [o] Linux notification
+- [ ] Linux notification
   - [x] Implement
   - [ ] Add action to notification?
