@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"encoding/json"
+	"errors"
 	"flag"
 	"fmt"
 	"io"
@@ -21,6 +22,8 @@ import (
 
 const appName = "goairdrop"
 
+const filePerm = 0o644 // Permissions for new files.
+
 var (
 	logger   *slog.Logger
 	logFname string
@@ -34,14 +37,14 @@ var (
 
 var appVersion = "0.1.1"
 
-// Message represents the structure of the incoming messages
+// Message represents the structure of the incoming messages.
 type Message struct {
 	Type    string `json:"type"`
 	Content string `json:"content"`
 	Action  string `json:"action"`
 }
 
-// Response represents the structure of the outgoing messages
+// Response represents the structure of the outgoing messages.
 type Response struct {
 	Success bool   `json:"success"`
 	Message string `json:"message"`
@@ -56,6 +59,7 @@ func notify(title, message string) error {
 		title,
 		message,
 	}
+
 	return executeCmd(args...)
 }
 
@@ -65,10 +69,8 @@ func openURL(s string) error {
 	if err := executeCmd(append(args, s)...); err != nil {
 		return fmt.Errorf("%w: opening in browser", err)
 	}
-	if err := notify(appName, "Opening URL: "+s); err != nil {
-		return err
-	}
-	return nil
+
+	return notify(appName, "Opening URL: "+s)
 }
 
 // executeCmd runs a command with the given arguments and returns an error if
@@ -123,13 +125,13 @@ func osArgs() []string {
 func handleOpenAction(msg Message) Response {
 	resp := Response{
 		Success: true,
-		Message: fmt.Sprintf("Opened text: %s", msg.Content),
+		Message: "Opened text: " + msg.Content,
 	}
 
 	err := openURL(msg.Content)
 	if err != nil {
 		resp.Success = false
-		resp.Message = fmt.Sprintf("Error opening text: %s", msg.Content)
+		resp.Message = "Error opening text: " + msg.Content
 	}
 
 	return resp
@@ -140,6 +142,7 @@ func getClientIP(r *http.Request) string {
 	if forwarded := r.Header.Get("X-Forwarded-For"); forwarded != "" {
 		return strings.SplitN(forwarded, ",", 2)[0]
 	}
+
 	return r.RemoteAddr
 }
 
@@ -172,7 +175,7 @@ func webhookHandler(w http.ResponseWriter, r *http.Request) {
 	case "open":
 		resp = handleOpenAction(msg)
 	default:
-		resp = Response{Success: false, Message: fmt.Sprintf("Unknown action: %s", msg.Action)}
+		resp = Response{Success: false, Message: "Unknown action: %s" + msg.Action}
 	}
 
 	w.Header().Set("Content-Type", "application/json")
@@ -219,7 +222,7 @@ func setupInterruptHandler(
 
 	go func() {
 		<-sigChan
-		logger.Warn("Received signal, initiating graceful shutdown")
+		logger.Debug("Received signal, initiating graceful shutdown")
 
 		shutdownCtx, shutdownCancel := context.WithTimeout(context.Background(), 30*time.Second)
 		defer shutdownCancel()
@@ -235,7 +238,7 @@ func setupInterruptHandler(
 }
 
 func main() {
-	f, err := os.OpenFile(logFname, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
+	f, err := os.OpenFile(logFname, os.O_APPEND|os.O_CREATE|os.O_WRONLY, filePerm)
 	if err != nil {
 		log.Fatalf("Failed to open log file: %v", err)
 	}
@@ -257,7 +260,7 @@ func main() {
 	serverErr := make(chan error)
 	go func() {
 		logger.Info("Starting server", slog.String("addr", addrFlag))
-		if err := server.ListenAndServe(); err != nil && err != http.ErrServerClosed {
+		if err := server.ListenAndServe(); err != nil && !errors.Is(err, http.ErrServerClosed) {
 			serverErr <- err
 		}
 	}()

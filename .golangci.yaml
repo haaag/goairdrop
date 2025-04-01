@@ -1,0 +1,191 @@
+version: "2"
+run:
+  issues-exit-code: 1
+  tests: true
+output:
+  path-prefix: ""
+linters:
+  default: none
+  enable:
+    - asasalint
+    - bidichk
+    - dogsled
+    - dupl
+    - err113
+    - errcheck
+    - errname
+    - errorlint
+    - forcetypeassert
+    - funlen
+    - goconst
+    - gocritic
+    - gocyclo
+    - godot
+    - gosec
+    - govet
+    - iface
+    - ineffassign
+    - interfacebloat
+    - lll
+    - maintidx
+    - makezero
+    - misspell
+    - musttag
+    - nakedret
+    - nestif
+    - nilerr
+    - nilnil
+    - nlreturn
+    - noctx
+    - nolintlint
+    - perfsprint
+    - prealloc
+    - predeclared
+    - protogetter
+    - reassign
+    - recvcheck
+    - revive
+    - rowserrcheck
+    - sqlclosecheck
+    - staticcheck
+    - tagalign
+    - testifylint
+    - thelper
+    - unconvert
+    - unparam
+    - unused
+    - usestdlibvars
+    - usetesting
+    - wastedassign
+    - whitespace
+    - wrapcheck
+  settings:
+    errcheck:
+      check-type-assertions: true
+      check-blank: false
+    errorlint:
+      errorf: true
+      asserts: false
+      comparison: false
+    goconst:
+      min-len: 2
+      min-occurrences: 4
+    gocritic:
+      enabled-tags:
+        - diagnostic
+        - experimental
+        - opinionated
+        - performance
+        - style
+    gosec:
+      excludes:
+        - G115
+        - G201
+        - G204
+    nlreturn:
+      block-size: 3
+    nolintlint:
+      require-explanation: false
+      require-specific: true
+    revive:
+      severity: warning
+      rules:
+        - name: atomic
+        - name: unexported-return
+        - name: errorf
+        - name: error-return
+        - name: error-naming
+        - name: if-return
+        - name: increment-decrement
+        - name: range
+        - name: receiver-naming
+        - name: empty-block
+        - name: confusing-naming
+        - name: unnecessary-stmt
+        - name: struct-tag
+        - name: modifies-value-receiver
+        - name: bool-literal-in-expr
+        - name: early-return
+        - name: unexported-naming
+        - name: nested-structs
+    staticcheck:
+      checks:
+      - "-ST1000"
+      # Dot imports are discouraged.
+      # https://staticcheck.dev/docs/checks/#ST1001
+      - ST1001
+      # Poorly chosen identifier.
+      # https://staticcheck.dev/docs/checks/#ST1003
+      - ST1003
+      # Incorrectly formatted error string.
+      # https://staticcheck.dev/docs/checks/#ST1005
+      - ST1005
+      # Poorly chosen receiver name.
+      # https://staticcheck.dev/docs/checks/#ST1006
+      - ST1006
+      # A function's error value should be its last return value.
+      # https://staticcheck.dev/docs/checks/#ST1008
+      - ST1008
+      # Poorly chosen name for variable of type 'time.Duration'.
+      # https://staticcheck.dev/docs/checks/#ST1011
+      - ST1011
+      # Poorly chosen name for error variable.
+      # https://staticcheck.dev/docs/checks/#ST1012
+      - ST1012
+      # Should use constants for HTTP error codes, not magic numbers.
+      # https://staticcheck.dev/docs/checks/#ST1013
+      - ST1013
+      # A switch's default case should be the first or last case.
+      # https://staticcheck.dev/docs/checks/#ST1015
+      - ST1015
+      # Use consistent method receiver names.
+      # https://staticcheck.dev/docs/checks/#ST1016
+      - ST1016
+      # Don't use Yoda conditions.
+      # https://staticcheck.dev/docs/checks/#ST1017
+      - ST1017
+      # Avoid zero-width and control characters in string literals.
+      # https://staticcheck.dev/docs/checks/#ST1018
+      - ST1018
+      # Importing the same package multiple times.
+      # https://staticcheck.dev/docs/checks/#ST1019
+      - ST1019
+      # The documentation of an exported function should start with the function's name.
+      # https://staticcheck.dev/docs/checks/#ST1020
+      - ST1020
+      # The documentation of an exported type should start with type's name.
+      # https://staticcheck.dev/docs/checks/#ST1021
+      - ST1021
+      # The documentation of an exported variable or constant should start with variable's name.
+      # https://staticcheck.dev/docs/checks/#ST1022
+      - ST1022
+      # Redundant type in variable declaration.
+      # https://staticcheck.dev/docs/checks/#ST1023
+      - ST1023
+    testifylint:
+      enable-all: true
+      disable:
+        - require-error
+  exclusions:
+    generated: lax
+    presets:
+      - common-false-positives
+    paths:
+      - cmd/Test.go
+      - internal/format/color/colorhex.go
+      - third_party$
+      - builtin$
+      - examples$
+issues:
+  uniq-by-line: true
+formatters:
+  enable:
+    - gofumpt
+    - goimports
+  exclusions:
+    generated: lax
+    paths:
+      - cmd/Test.go
+      - third_party$
+      - builtin$
+      - examples$
