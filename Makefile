@@ -30,7 +30,6 @@ clean:
 # Lint code with 'golangci-lint'
 lint:
 	@echo '>> Linting code'
-	@echo
 	@go vet ./...
 	golangci-lint run ./...
 
