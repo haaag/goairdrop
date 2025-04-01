@@ -9,6 +9,7 @@ import (
 	"net/http"
 	"os/exec"
 	"runtime"
+	"strings"
 )
 
 const appName = "goairdrop"
@@ -17,8 +18,9 @@ var version = "0.1.0"
 
 // Message represents the structure of the incoming messages
 type Message struct {
-	Text   string `json:"text"`
-	Action string `json:"action"`
+	Type    string `json:"type"`
+	Content string `json:"content"`
+	Action  string `json:"action"`
 }
 
 // Response represents the structure of the outgoing messages
@@ -27,11 +29,26 @@ type Response struct {
 	Message string `json:"message"`
 }
 
+// notify sends a notification using the notify-send command.
+func notify(title, message string) error {
+	args := []string{
+		"notify-send",
+		"--app-name=" + appName,
+		"--icon=gnome-user-share",
+		title,
+		message,
+	}
+	return executeCmd(args...)
+}
+
 // openURL opens a URL in the default browser.
 func openURL(s string) error {
 	args := osArgs()
 	if err := executeCmd(append(args, s)...); err != nil {
 		return fmt.Errorf("%w: opening in browser", err)
+	}
+	if err := notify(appName, "Opening URL: "+s); err != nil {
+		return err
 	}
 	return nil
 }
@@ -49,6 +66,7 @@ func executeCmd(arg ...string) error {
 
 // osArgs returns the correct arguments for the OS.
 func osArgs() []string {
+	// FIX: only support linux
 	var args []string
 	switch runtime.GOOS {
 	case "darwin":
@@ -66,13 +84,13 @@ func osArgs() []string {
 func handleOpenAction(msg Message) Response {
 	resp := Response{
 		Success: true,
-		Message: fmt.Sprintf("Opened text: %s", msg.Text),
+		Message: fmt.Sprintf("Opened text: %s", msg.Content),
 	}
 
-	err := openURL(msg.Text)
+	err := openURL(msg.Content)
 	if err != nil {
 		resp.Success = false
-		resp.Message = fmt.Sprintf("Error opening text: %s", msg.Text)
+		resp.Message = fmt.Sprintf("Error opening text: %s", msg.Content)
 	}
 
 	return resp
@@ -111,9 +129,12 @@ func webhookHandler(w http.ResponseWriter, r *http.Request) {
 func main() {
 	addr := flag.String("addr", ":5001", "HTTP service address")
 	flag.Usage = func() {
-		fmt.Println("Usage:")
-		fmt.Printf("  %s v%s [options]\n", appName, version)
-		fmt.Println("\nOptions:")
+		var sb strings.Builder
+		sb.WriteString("Usage:")
+		sb.WriteString(fmt.Sprintf("  %s v%s [options]\n", appName, version))
+		sb.WriteString("\n simple webhook server\n")
+		sb.WriteString("\nOptions:")
+		fmt.Println(sb.String())
 		flag.PrintDefaults()
 	}
 
