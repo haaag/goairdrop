@@ -11,7 +11,7 @@ import (
 	"runtime"
 )
 
-const appName = "goshare"
+const appName = "goairdrop"
 
 var version = "0.1.0"
 

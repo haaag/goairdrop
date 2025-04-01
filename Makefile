@@ -1,7 +1,7 @@
-# goshare - simple program to receive text 
+# goairdrop - simple program to receive text 
 # See LICENSE file for copyright and license details.
 
-PROJECT_NAME	:= goshare
+PROJECT_NAME	:= goairdrop
 MAIN_SRC	:= main.go
 BIN_DIR		:= bin
 BIN_PATH	:= $(BIN_DIR)/$(PROJECT_NAME)
