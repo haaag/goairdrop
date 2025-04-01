@@ -1,5 +1,5 @@
 <div align="center">
-    <h1><b><span style="font-size: 1.3em">🔗</span> GoShare</b></h1>
+    <h1><b><span style="font-size: 1.3em">🔗</span> GoAirDrop</b></h1>
     <span>Simple program to receive text<b><span style="font-size: 0.8em"> <br>(🚧 WIP)</span></b></span>
 <br>
 <br>
@@ -14,9 +14,9 @@
 
 ## Purpose
 
-It's an easy way to send me URLs that I want to view on my device or in a browser on my PC.
+It's an easy way to get URLs (for now) from my Android device
 
-For now, I use [URLCheck](https://github.com/TrianguloY/URLCheck) on my Android to share links, as it has support for webhooks.
+For now, I use [URLCheck](https://github.com/TrianguloY/URLCheck) on my Android to share links because it has webhook support.
 
 ## TO-DO:
 
